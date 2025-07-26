@@ -14,14 +14,16 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/Arman-for-dev/mern-blog-app25/issues"
   },
   "homepage": "https://github.com/Arman-for-dev/mern-blog-app25#readme",
   "dependencies": {
     "dotenv": "^17.2.1",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "mongodb": "^6.18.0",
+    "mongoose": "^8.16.5"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
