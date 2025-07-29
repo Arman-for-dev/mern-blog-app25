@@ -1,11 +1,13 @@
 import React from 'react'
-import {Button, Navbar, NavbarCollapse, NavbarLink, NavbarToggle, TextInput} from "flowbite-react";
+import {Avatar, Button, Dropdown, DropdownDivider, DropdownHeader, DropdownItem, Navbar, NavbarCollapse, NavbarLink, NavbarToggle, TextInput} from "flowbite-react";
 import { Link} from "react-router-dom";
 import {AiOutlineSearch} from "react-icons/ai";
 import {FaMoon} from "react-icons/fa";
 import path from 'path';
+import {useSelector} from 'react-redux';
 
 const Header = () => {
+  const {currentUser} = useSelector(state=>state.user);
   return (
     <Navbar className='border-b-2'>
       <Link to="/" className='self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white'>
@@ -22,11 +24,44 @@ const Header = () => {
         <Button className='w-12 h-10 hidden sm:inline' color='gray' pill>
           <FaMoon />
         </Button>
-        <Link to='/sign-in'>
-          <Button className='cursor-pointer bg-linear-65 from-purple-500 to-pink-500' color='gray' pill>
-            Sign In
-          </Button>
-        </Link>
+        {
+          currentUser ? (
+            <Dropdown
+              arrowIcon={false}
+              inline
+              label={
+                <Avatar
+                  alt='user'
+                  img={currentUser.profilePicture}
+                  rounded 
+                />
+              }
+            >
+              <DropdownHeader>
+                <span className='block text-sm'>@ {currentUser.username}</span>
+              </DropdownHeader>
+
+              <DropdownItem>
+                <Link to="/dashboard">
+                  Dashboard
+                </Link>
+              </DropdownItem>
+              <DropdownItem>
+                <Link to="/profile">
+                  Profile
+                </Link>
+              </DropdownItem>
+              <DropdownDivider />
+              <DropdownItem>Sign out</DropdownItem>
+            </Dropdown>
+          ) : (
+            <Link to='/sign-in'>
+              <Button className='cursor-pointer bg-linear-65 from-purple-500 to-pink-500' color='gray' pill>
+                Sign In
+              </Button>
+            </Link>
+          )
+        }
         <NavbarToggle />
       </div>
       <NavbarCollapse>
