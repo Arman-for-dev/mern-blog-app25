@@ -1,12 +1,14 @@
 import { Alert, Button, Label, Spinner, TextInput } from 'flowbite-react';
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
+import { signInStart, signInSuccess, signInFailure } from "../redux/slices/userSlice";
+import { useDispatch, useSelector } from 'react-redux';
 
 const Signin = () => {
   const [formData, setFormData] = useState({});
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const {loading, error: errorMessage} = useSelector((state)=> state.user);
 
 
   const handleChange = (e) =>{
@@ -16,12 +18,11 @@ const Signin = () => {
 
   const handleSubmit = async (e) =>{
     e.preventDefault();
-    if(!formData.username || !formData.email || !formData.password){
-      return setErrorMessage("Please fill out all field!");
+    if( !formData.email || !formData.password){
+      return dispatch(signInFailure('Please fill out all filed!'))
     }
     try {
-      setLoading(true);
-      setErrorMessage(null);
+      dispatch(signInStart())
       const res = await fetch('/api/auth/sign-in', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -30,11 +31,11 @@ const Signin = () => {
 
       const data = await res.json();
       if(res.ok){
+        dispatch(signInSuccess(data));
         navigate("/");
       }
-      console.log(data)
     } catch (error) {
-      console.log(error);
+      dispatch(signInFailure(error.message))
     }
   }
   return (
@@ -63,11 +64,11 @@ const Signin = () => {
             )}
             <div>
               <Label htmlFor="email">Your email</Label>
-              <TextInput type='text' placeholder='example@mail.com' onChange={handleChange} id="email" />
+              <TextInput type='email' placeholder='example@mail.com' onChange={handleChange} id="email" />
             </div>
             <div>
               <Label htmlFor="password">Your Password</Label>
-              <TextInput type='text' placeholder='Password' onChange={handleChange} id="password" />
+              <TextInput type='password' placeholder='Password' onChange={handleChange} id="password" />
             </div>
             <Button className='cursor-pointer bg-linear-65 from-purple-500 to-pink-500' type='submit'>
               {loading ? (
